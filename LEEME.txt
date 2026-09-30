@@ -1,0 +1,28 @@
+MIZUL PARTES DE FRENTE - app independiente
+==========================================
+
+Los partes y fotos se guardan SOLO en tu celular (no dependen de Claude ni de internet).
+Funciona sin señal una vez instalada. Haz "Guardar respaldo" cada semana.
+
+PUBLICAR (una sola vez, gratis, con GitHub Pages)
+1. Crea una cuenta en https://github.com (si no tienes).
+2. Botón "+" > "New repository". Nombre: partes-mizul. Marca "Public". "Create repository".
+3. En el repositorio: "uploading an existing file". Arrastra TODOS los archivos de esta carpeta
+   (index.html, app.js, sw.js, manifest.webmanifest, xlsx.full.min.js y los 3 icon-*.png).
+   Luego "Commit changes".
+4. Settings > Pages > Source: "Deploy from a branch" > Branch: main / (root) > Save.
+5. Espera 1-2 minutos. Tu app queda en:  https://TU-USUARIO.github.io/partes-mizul/
+
+INSTALAR EN EL CELULAR
+1. Abre ese enlace en Chrome.
+2. Menú (tres puntos) > "Instalar app" o "Agregar a la pantalla principal".
+3. Al primer registro, Chrome pedirá permiso de ubicación: toca "Permitir".
+
+ACTUALIZAR LA APP
+Sube los archivos nuevos al mismo repositorio. El celular toma la versión nueva
+la siguiente vez que abras la app con internet (a veces hay que abrirla dos veces).
+Tus partes NO se borran al actualizar.
+
+IMPORTANTE
+- No borres los datos de Chrome ni desinstales la app sin antes guardar un respaldo.
+- Para pasar los datos a otro celular: "Guardar respaldo" en el viejo y "Restaurar respaldo" en el nuevo.
