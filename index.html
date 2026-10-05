@@ -50,6 +50,34 @@ h2{font:700 20px/1.1 var(--f-display);text-transform:uppercase;letter-spacing:.0
 .front.has{border-color:var(--deep)}
 .front.has .meta span:first-child{color:var(--ok)}
 .front.add{border-style:dashed;align-items:center;justify-content:center;color:var(--muted);font-weight:600}
+.fr-ed{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:10px}
+.fr-ed-list{display:grid;gap:8px}
+.fr-row{display:flex;gap:6px;align-items:center;min-width:0}
+.fr-row .n{font:500 13px var(--f-mono);color:var(--muted);width:22px;flex:none}
+.fr-row input{flex:1;min-width:0}
+.fr-row .ib{flex:none;width:40px;height:44px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px;font-weight:700;color:var(--ink)}
+.fr-row .ib:disabled{opacity:.35}
+.fr-row .del{color:var(--bad)}
+.fr-row .del[data-armed]{background:var(--bad);color:#fff;border-color:var(--bad);width:auto;padding:0 10px;font-size:12px}
+.fr-row.removed{display:none}
+.fr-note{font-size:12px;color:var(--muted);padding-left:28px;margin-top:-4px}
+.fr-ed-f{display:flex;gap:10px}.fr-ed-f .btn{flex:1}
+.partidas{display:grid;gap:12px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.pt-lvl{display:grid;gap:6px;min-width:0}
+.pt-lbl{font-size:13px;font-weight:600;color:var(--muted)}
+.pt-row,.pt-new{display:flex;gap:8px;align-items:center;min-width:0}
+.pt-row select,.pt-new input{flex:1;min-width:0}
+.pt-row select:disabled{opacity:.55}
+.pt-ed{display:grid;gap:6px;background:var(--bg);border-radius:8px;padding:8px}
+.pt-ed .row{display:flex;gap:6px;align-items:center}
+.pt-ed .row input{flex:1;min-width:0;background:var(--surface)}
+.pt-ed .row button{flex:none;width:40px;height:44px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--bad);font-size:15px}
+.pt-ed .row button.mv{color:var(--ink);font-weight:700}
+.pt-ed .row button:disabled{opacity:.35}
+.pt-ed .row button[data-armed]{width:auto;padding:0 10px;background:var(--bad);color:#fff;font-size:12px}
+.pt-ed .hint{font-size:12px;color:var(--muted)}
+.pt-ed .f{display:flex;gap:8px}.pt-ed .f .btn{flex:1}
+.rec .chain{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
 .addrow{display:flex;gap:8px}
 .addrow input{flex:1;min-width:0}
 .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
@@ -137,10 +165,6 @@ body{margin:0;padding-bottom:env(safe-area-inset-bottom,0px)}
 [hidden]{display:none!important}
 img{max-width:100%}
 .top{padding-top:calc(10px + env(safe-area-inset-top,0px));top:0}
-.gps{display:flex;align-items:center;gap:10px;background:var(--chip);border-radius:8px;padding:8px 10px;font-size:14px;min-width:0}
-.gps .lbl{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex:none}
-.gps #gpsTxt{flex:1;min-width:0;font-family:var(--f-mono);font-size:13px;overflow-wrap:anywhere}
-.gps a,.rec a{color:inherit}
 .backup{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px}
 .backup p{margin:0;font-size:14px;color:var(--muted)}
 .backup .row{display:flex;gap:8px;flex-wrap:wrap}
@@ -148,7 +172,8 @@ img{max-width:100%}
 .file-btn input{position:absolute;inset:0;opacity:0;width:100%;height:100%}
 .badge{background:var(--warn);color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:2px 8px;letter-spacing:.04em}
 </style>
-<script src="xlsx.full.min.js" defer></script>
+<script src="exceljs.min.js" defer></script>
+<script src="docx.min.js" defer></script>
 </head>
 <body>
 <header class="top">
@@ -161,8 +186,13 @@ img{max-width:100%}
   <div class="mode" id="mode">Abriendo tus datos…</div>
 
   <section class="sec-h-wrap" style="display:grid;gap:10px">
-    <div class="sec-h"><h2>Frentes</h2><span class="hint">Toca el frente donde estás y guarda el parte</span></div>
+    <div class="sec-h"><h2>Frentes</h2><span class="hint" id="frHint"></span><button type="button" class="btn small" id="edFr" style="margin-left:auto">Editar frentes</button></div>
     <div class="fronts" id="fronts"></div>
+    <div class="fr-ed" id="frEd" hidden>
+      <div id="frEdList" class="fr-ed-list"></div>
+      <button type="button" class="btn" id="frEdAdd">+ Agregar frente</button>
+      <div class="fr-ed-f"><button type="button" class="btn" id="frEdCancel">Cancelar</button><button type="button" class="btn primary" id="frEdSave">Guardar cambios</button></div>
+    </div>
     <div class="addrow" id="addrow" hidden>
       <input id="nuevoFrente" placeholder="Nombre del nuevo frente" maxlength="60">
       <button class="btn dark" id="addOk">Agregar</button>
@@ -185,6 +215,8 @@ img{max-width:100%}
       <select id="filtro" aria-label="Filtrar por frente"><option value="">Todos los frentes</option></select>
       <button class="btn dark" id="expDia">Excel del día</button>
       <button class="btn" id="expTodo">Excel completo</button>
+      <button class="btn dark" id="wordDia">Word del día</button>
+      <button class="btn" id="wordTodo">Word completo</button>
       <button class="btn primary" id="shareDia">Enviar Excel del día</button>
     </div>
     <div class="list" id="list"></div>
@@ -209,17 +241,25 @@ img{max-width:100%}
       <label>Fecha<input type="date" id="fFecha" required></label>
       <label>Hora<input type="time" id="fHora" required></label>
     </div>
-    <div class="gps"><span class="lbl">GPS</span><span id="gpsTxt">Sin ubicación</span><button type="button" class="btn small" id="gpsBtn">Actualizar</button></div>
     <label id="estWrap" hidden><span id="estLbl">Estructura</span>
       <select id="fEstr"></select>
     </label>
-    <label>Actividad / partida
-      <input id="fAct" list="actList" placeholder="Ej. Vaciado de concreto losa de canal" required maxlength="140">
+    <div class="partidas" id="partidas">
+      <div class="pt-lvl" data-n="2"><span class="pt-lbl">Partida 3er orden</span><div class="pt-row"><select id="fP2" aria-label="Partida de 3er orden"></select><button type="button" class="btn small" data-edp="2">Editar</button></div><div class="pt-new" hidden><input placeholder="Nombre de la nueva partida" maxlength="120" aria-label="Nueva partida de 3er orden"><button type="button" class="btn small dark">Guardar</button><button type="button" class="btn small">✕</button></div><div class="pt-ed" hidden></div></div>
+      <div class="pt-lvl" data-n="3"><span class="pt-lbl">Partida 4to orden</span><div class="pt-row"><select id="fP3" aria-label="Partida de 4to orden"></select><button type="button" class="btn small" data-edp="3">Editar</button></div><div class="pt-new" hidden><input placeholder="Nombre de la nueva partida" maxlength="120" aria-label="Nueva partida de 4to orden"><button type="button" class="btn small dark">Guardar</button><button type="button" class="btn small">✕</button></div><div class="pt-ed" hidden></div></div>
+      <div class="pt-lvl" data-n="4"><span class="pt-lbl">Partida 5to orden</span><div class="pt-row"><select id="fP4" aria-label="Partida de 5to orden"></select><button type="button" class="btn small" data-edp="4">Editar</button></div><div class="pt-new" hidden><input placeholder="Nombre de la nueva partida" maxlength="120" aria-label="Nueva partida de 5to orden"><button type="button" class="btn small dark">Guardar</button><button type="button" class="btn small">✕</button></div><div class="pt-ed" hidden></div></div>
+    </div>
+    <label>Actividad
+      <input id="fAct" list="actList" placeholder="Ej. Vaciado de concreto" required maxlength="140">
       <datalist id="actList"></datalist>
     </label>
     <div class="quick" id="actQuick"></div>
+    <label>Elemento estructural
+      <input id="fElem" list="elemList" placeholder="Ej. Losa, muro, zapata" maxlength="100">
+      <datalist id="elemList"></datalist>
+    </label>
     <div class="crew">
-      <div class="crew-h"><span>Operarios</span><button type="button" class="btn small" id="addOp">+ Operario</button></div>
+      <div class="crew-h"><span>Operarios (apodo o nombre)</span><button type="button" class="btn small" id="addOp">+ Operario</button></div>
       <div id="opList" class="op-list"></div>
       <datalist id="capList"></datalist>
       <div class="grid3">
@@ -232,17 +272,9 @@ img{max-width:100%}
         <div class="total"><span>Total cuadrilla</span><strong id="fTot">0</strong></div>
       </div>
     </div>
+    <label>Materiales<input id="fMat" list="matList" placeholder="Ej. Concreto f'c 210, acero 1/2&quot;, madera" maxlength="300"><datalist id="matList"></datalist></label>
+    <label>Equipos<input id="fEqu" list="equList" placeholder="Ej. Vibrador, mezcladora, compactadora" maxlength="300"><datalist id="equList"></datalist></label>
     <label>Descripción del avance<textarea id="fDesc" placeholder="Qué están haciendo y por dónde van. Ej. Encofrando paño 14 margen izquierda, ya vaciaron hasta el paño 12" maxlength="1500"></textarea></label>
-    <div class="grid2" id="progWrap">
-      <label>Progresiva inicio<input id="fPi" class="mono" placeholder="0+000" maxlength="12"></label>
-      <label>Progresiva fin<input id="fPf" class="mono" placeholder="0+020" maxlength="12"></label>
-    </div>
-    <label>Estado del frente
-      <div class="seg estado" id="fEst">
-        <button type="button" data-v="Normal">Normal</button><button type="button" data-v="Observación">Observación</button><button type="button" data-v="Paralizado">Paralizado</button>
-      </div>
-    </label>
-    <label>Observaciones<textarea id="fObs" placeholder="Equipos, materiales faltantes, incidencias, diferencias con planos…" maxlength="1500"></textarea></label>
     <div style="display:grid;gap:6px">
       <span style="font-size:13px;font-weight:600;color:var(--muted)">Fotos</span>
       <div class="photos" id="fPhotos"></div>

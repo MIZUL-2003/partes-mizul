@@ -1,28 +1,24 @@
-MIZUL PARTES DE FRENTE - app independiente
-==========================================
+MIZUL PARTES DE FRENTE - versión final (5/10/2026)
+==================================================
 
-Los partes y fotos se guardan SOLO en tu celular (no dependen de Claude ni de internet).
-Funciona sin señal una vez instalada. Haz "Guardar respaldo" cada semana.
+ACTUALIZAR TU APP EN GITHUB
+1. Entra a github.com/MIZUL-2003/partes-mizul
+2. Add file > Upload files
+3. Arrastra TODOS estos archivos:
+   index.html, app.js, sw.js, manifest.webmanifest,
+   exceljs.min.js, docx.min.js, icon-192.png, icon-512.png, icon-maskable-512.png
+4. Commit changes (botón verde).
+5. (Opcional) El archivo antiguo xlsx.full.min.js ya no se usa: puedes borrarlo
+   (ábrelo en GitHub > ícono de tres puntos > Delete file > Commit changes).
 
-PUBLICAR (una sola vez, gratis, con GitHub Pages)
-1. Crea una cuenta en https://github.com (si no tienes).
-2. Botón "+" > "New repository". Nombre: partes-mizul. Marca "Public". "Create repository".
-3. En el repositorio: "uploading an existing file". Arrastra TODOS los archivos de esta carpeta
-   (index.html, app.js, sw.js, manifest.webmanifest, xlsx.full.min.js y los 3 icon-*.png).
-   Luego "Commit changes".
-4. Settings > Pages > Source: "Deploy from a branch" > Branch: main / (root) > Save.
-5. Espera 1-2 minutos. Tu app queda en:  https://TU-USUARIO.github.io/partes-mizul/
-
-INSTALAR EN EL CELULAR
-1. Abre ese enlace en Chrome.
-2. Menú (tres puntos) > "Instalar app" o "Agregar a la pantalla principal".
-3. Al primer registro, Chrome pedirá permiso de ubicación: toca "Permitir".
-
-ACTUALIZAR LA APP
-Sube los archivos nuevos al mismo repositorio. El celular toma la versión nueva
-la siguiente vez que abras la app con internet (a veces hay que abrirla dos veces).
-Tus partes NO se borran al actualizar.
+EN EL CELULAR
+- Espera 2 minutos, abre la app con internet, ciérrala y ábrela otra vez.
+  (La primera vez carga la versión guardada; la segunda, la nueva.)
+- Al abrirse por primera vez ya trae tus 8 frentes, las tomas laterales y las 269 partidas.
+- Tus partes anteriores NO se borran.
 
 IMPORTANTE
-- No borres los datos de Chrome ni desinstales la app sin antes guardar un respaldo.
-- Para pasar los datos a otro celular: "Guardar respaldo" en el viejo y "Restaurar respaldo" en el nuevo.
+- Los datos viven solo en el celular. Usa "Guardar respaldo" cada semana.
+- Para pasar datos a otro celular: "Guardar respaldo" en el viejo y "Restaurar respaldo" en el nuevo.
+- En Word: Archivo > Opciones > Avanzadas > marca "No comprimir las imágenes del archivo"
+  para que las fotos no pierdan calidad al guardar.
